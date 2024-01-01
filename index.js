@@ -10,7 +10,11 @@ import {
   signOut,
   onAuthStateChanged
 } from 'firebase/auth';
-//import {  } from 'firebase/firestore';
+import {
+  getFirestore,
+  collection,
+  addDoc
+  } from 'firebase/firestore';
 
 import * as firebaseui from 'firebaseui';
 
@@ -43,7 +47,7 @@ const firebaseConfig = {
 initializeApp(firebaseConfig);
 
 auth = getAuth();
-
+db = getFirestore();
 
 
 async function main() {
@@ -79,10 +83,29 @@ async function main() {
   onAuthStateChanged(auth, user => {
     if (user) {
       startRsvpButton.textContent = 'LOGOUT'; 
+      guestbookContainer.style.display = 'block';
+      
     }else {
       startRsvpButton.textContent = 'RSVP';
+      guestbookContainer.style.display = 'none';
     }
   })
+
+
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    addDoc(collection(db, 'guestbook'), {
+      text: input.value,
+      timestamp: Date.now(),
+      name: auth.currentUser.displayName,
+      userId: auth.currentUser.uid
+    });
+    input.value = '';
+    return false;
+  });
+
+
 
 }
 main();

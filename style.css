@@ -85,15 +85,42 @@ p {
   font-weight: lighter;
   font-size: 14px;
 }
+#guestbook-container > form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 3em;
+  margin-top: 3rem;
+
+  & > input {
+    width: 50%;
+  }
+
+  @media (width < 600px) {
+    flex-direction: column;
+    gap: 1.5em; 
+
+
+  }
+  & > input {
+    width: 100%;
+  }
+}
 
 input{
   border: none;
-  border-bottom: 1px solid rgba(0,0,0,.12);
-  font-size: 14px;
+  border-radius: 3.5rem;
+  outline: .1rem solid rgba(0, 0, 0, 0);
+  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
+  font-size: 1.4rem;
   padding: 4px 0;
   background: 0 0;
   text-align: left;
   color: inherit;
+  padding: .8rem;
+}
+input:focus {
+  outline: .3rem solid rgba(0, 0, 0, 0.1);
 }
 
 button.clicked{
@@ -122,9 +149,16 @@ justify-content: center;
 margin: 8px 16px;
 outline-color: rgb(60, 67, 154);
 overflow: hidden;
-padding: 0px 15px;
+padding: .5rem 1.8rem;
 position: relative;
 text-align: center;
 text-transform: uppercase;
 vertical-align: middle;
+}
+
+button:hover {
+  background-color: rgb(60, 67, 154);
+  border-color: rgb(60, 67, 154);
+  color: white;
+  outline-color: rgb(60, 67, 154);
 }
