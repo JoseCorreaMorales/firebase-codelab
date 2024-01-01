@@ -13,7 +13,10 @@ import {
 import {
   getFirestore,
   collection,
-  addDoc
+  addDoc,
+  query,
+  orderBy,
+  onSnapshot
   } from 'firebase/firestore';
 
 import * as firebaseui from 'firebaseui';
@@ -105,6 +108,17 @@ async function main() {
     return false;
   });
 
+  const q = query(collection(db, 'guestbook'), orderBy('timestamp', 'desc'));
+  onSnapshot(q, (snapshop) => {
+    //when there are any changes to documents that match the query.
+    // This could be if a message gets deleted, modified, or added. 
+    guestbook.innerHTML = '';
+    snapshop.forEach((doc) => {
+      const entry = document.createElement('p');
+      entry.textContent = doc.data().name + ': ' + doc.data().text;
+      guestbook.appendChild(entry);
+    });
+  });
 
 
 }
