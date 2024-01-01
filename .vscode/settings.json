@@ -1,4 +1,9 @@
 {
+  "workbench.colorCustomizations": {
+    "activityBar.background": "#053431",
+    "titleBar.activeBackground": "#074844",
+    "titleBar.activeForeground": "#ECFDFC"
+  }
   // "editor.theme": "vs-dark",
   /**
    * Render vertical lines at the specified columns.
