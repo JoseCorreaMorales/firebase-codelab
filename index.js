@@ -17,7 +17,10 @@ import {
   addDoc,
   query,
   orderBy,
-  onSnapshot
+  onSnapshot,
+  doc,
+  setDoc,
+  where
 } from 'firebase/firestore';
 
 import * as firebaseui from 'firebaseui';
@@ -72,7 +75,7 @@ async function main() {
 
   const ui = new firebaseui.auth.AuthUI(auth);
 
-  
+
 
   startRsvpButton.addEventListener('click', () => {
     if (auth.currentUser) {
@@ -88,11 +91,13 @@ async function main() {
       startRsvpButton.textContent = 'LOGOUT';
       guestbookContainer.style.display = 'block';
       subscribeGuestbook();
+      subscribeCurrentRsvp(user);
 
     } else {
       startRsvpButton.textContent = 'RSVP';
       guestbookContainer.style.display = 'none';
-      unsubscribeGuestbook
+      unsubscribeGuestbook();
+      unsubscribeCurrentRsvp();
     }
   })
 
@@ -106,6 +111,35 @@ async function main() {
     });
     input.value = '';
     return false;
+  });
+
+  rsvpYes.addEventListener('click', async () => {
+    const userRef = doc(db, 'attendees', auth.currentUser.uid);
+    try {
+      await setDoc(userRef, {
+        attending: true
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  });
+
+
+  rsvpNo.addEventListener('click', async () => {
+    const userRef = doc(db, 'attendees', auth.currentUser.uid);
+    try {
+      await setDoc(userRef, {
+        attending: false
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  });
+
+  const attendingQuery = query(collection(db, 'attendees'), where('attending', '==', true));
+  const unsubscribe = onSnapshot(attendingQuery, (snapshot) => {
+    const newAttendeCount = snapshot.docs.length;
+    numberAttending.innerHTML = newAttendeCount + ' people going';
   });
 
 }
@@ -135,4 +169,30 @@ function unsubscribeGuestbook() {
     guestbookListener();
     guestbookListener = null;
   }
+}
+
+function subscribeCurrentRsvp(user) {
+  const userRef = doc(db, 'attendees', user.uid);
+  rsvpListener = onSnapshot(userRef, (doc) => {
+    if (doc && doc.data()) {
+      const attendingResponse = doc.data().attending;
+      if (attendingResponse) {
+        rsvpYes.className = 'clicked';
+        rsvpNo.className = '';
+      } else {
+        rsvpYes.className = '';
+        rsvpNo.className = 'clicked';
+      }
+    }
+  });
+
+}
+
+function unsubscribeCurrentRsvp() {
+  if (rsvpListener != null) {
+    rsvpListener();
+    rsvpListener = null;
+  }
+  rsvpYes.className = '';
+  rsvpNo.className = '';
 }

@@ -31,7 +31,6 @@
 
       <p><i class="material-icons">calendar_today</i> October 30</p>
       <p><i class="material-icons">location_city</i> San Francisco</p>
-      <!-- ADD THE RSVP BUTTON HERE -->
       <button id="startRsvp">RSVP</button>
     </section>
 
@@ -45,6 +44,11 @@
     </section>
 
     <section id="guestbook-container">
+      <h2>Are you attending?</h2>
+      <button id="rsvp-yes">YES</button>
+      <button id="rsvp-no">NO</button>
+      <p id="number-attending"></p>
+
       <h2>Join the discution!</h2>
       <form id="leave-message">
         <label for="message">Leave a message: </label>
@@ -54,7 +58,9 @@
         </button>
       </form>
 
-      <section id="guestbook-discussion" class="guestbook-discussion"></section>
+      <h2>Discution</h2>
+      <section id="guestbook-discussion" class="guestbook-discussion">
+      </section>
 
     </section>
     <footer></footer>
