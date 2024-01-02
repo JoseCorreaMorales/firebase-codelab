@@ -1,4 +1,3 @@
-// Import stylesheets
 import './style.css';
 // Firebase App (the core Firebase SDK) is always required
 import { initializeApp } from 'firebase/app';
@@ -11,6 +10,7 @@ import {
   onAuthStateChanged,
   fetchSignInMethodsForEmail
 } from 'firebase/auth';
+
 import {
   getFirestore,
   collection,
@@ -35,7 +35,6 @@ const rsvpNo = document.getElementById('rsvp-no');
 
 let rsvpListener = null;
 let guestbookListener = null;
-
 let db, auth;
 
 // Firebase project configuration object
@@ -47,15 +46,10 @@ const firebaseConfig = {
   messagingSenderId: "438253878957",
   appId: "1:438253878957:web:04505fcf43e45d440c9024"
 }
-
 initializeApp(firebaseConfig);
 
 auth = getAuth();
 db = getFirestore();
-
-
-
-
 
 async function main() {
 
@@ -123,19 +117,19 @@ function subscribeGuestbook() {
     //when there are any changes to documents that match the query.
     // This could be if a message gets deleted, modified, or added. 
     guestbookDiscussion.innerHTML = '';
-    //<p><strong> ${doc.data().name} </strong>: ${doc.data().text}</p>
     snapshop.forEach((doc) => {
-     /*  const entry = document.createElement('p');
-      entry.textContent = doc.data().name + ': ' + doc.data().text;
-      guestbookDiscussion.appendChild(entry); */
       const entry = document.createElement('div');
       entry.classList.add('guestbook-entry');
-      entry.innerHTML += `<p><strong>${doc.data().name}</strong>: ${doc.data().text}</p>`;
+      entry.innerHTML += `<p><strong>${doc.data().name}</strong>: ${doc.data().text}</p>
+      <sub>
+      ${new Date(doc.data().timestamp).toLocaleDateString()}
+      ${new Date(doc.data().timestamp).toLocaleTimeString()}
+      </sub>`;
       guestbookDiscussion.appendChild(entry);
     });
   });
 }
-
+//new Date(doc.data().timestamp)
 function unsubscribeGuestbook() {
   if (guestbookListener != null) {
     guestbookListener();
