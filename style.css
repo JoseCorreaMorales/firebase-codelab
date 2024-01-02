@@ -75,11 +75,11 @@ label{
   font-size: 18px;
 }
 
-p {
+/* p {
   font-size: 18px;
   margin-top:10px;
   margin-bottom:0px;
-}
+} */
 
 #guestbook > p {
   font-weight: lighter;
@@ -96,6 +96,9 @@ p {
     width: 50%;
   }
 
+  
+ 
+
   @media (width < 600px) {
     flex-direction: column;
     gap: 1.5em; 
@@ -104,6 +107,26 @@ p {
   }
   & > input {
     width: 100%;
+  }
+}
+
+
+
+.guestbook-discussion {
+
+}
+
+.guestbook-entry {
+  margin-bottom: 2rem;
+  & > strong {
+    font-size: 1.2rem;
+  } 
+
+  & > p {
+    outline: .2rem solid purple;
+    border-radius: 3.5rem;
+    padding: 1rem;
+    background-color: rgba(128, 0, 128, 0.122);
   }
 }
 

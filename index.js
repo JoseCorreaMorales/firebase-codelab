@@ -5,10 +5,11 @@ import { initializeApp } from 'firebase/app';
 
 // Add the Firebase products and methods that you want to use
 import {
-   getAuth,
+  getAuth,
   EmailAuthProvider,
   signOut,
-  onAuthStateChanged
+  onAuthStateChanged,
+  fetchSignInMethodsForEmail
 } from 'firebase/auth';
 import {
   getFirestore,
@@ -17,7 +18,7 @@ import {
   query,
   orderBy,
   onSnapshot
-  } from 'firebase/firestore';
+} from 'firebase/firestore';
 
 import * as firebaseui from 'firebaseui';
 
@@ -27,7 +28,7 @@ const guestbookContainer = document.getElementById('guestbook-container');
 
 const form = document.getElementById('leave-message');
 const input = document.getElementById('message');
-const guestbook = document.getElementById('guestbook');
+const guestbookDiscussion = document.getElementById('guestbook-discussion');
 const numberAttending = document.getElementById('number-attending');
 const rsvpYes = document.getElementById('rsvp-yes');
 const rsvpNo = document.getElementById('rsvp-no');
@@ -53,6 +54,9 @@ auth = getAuth();
 db = getFirestore();
 
 
+
+
+
 async function main() {
 
 
@@ -74,6 +78,8 @@ async function main() {
 
   const ui = new firebaseui.auth.AuthUI(auth);
 
+  
+
   startRsvpButton.addEventListener('click', () => {
     if (auth.currentUser) {
       // User is signed in allows user to sign out
@@ -85,16 +91,16 @@ async function main() {
 
   onAuthStateChanged(auth, user => {
     if (user) {
-      startRsvpButton.textContent = 'LOGOUT'; 
+      startRsvpButton.textContent = 'LOGOUT';
       guestbookContainer.style.display = 'block';
-      
-    }else {
+      subscribeGuestbook();
+
+    } else {
       startRsvpButton.textContent = 'RSVP';
       guestbookContainer.style.display = 'none';
+      unsubscribeGuestbook
     }
   })
-
-
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -108,18 +114,31 @@ async function main() {
     return false;
   });
 
-  const q = query(collection(db, 'guestbook'), orderBy('timestamp', 'desc'));
-  onSnapshot(q, (snapshop) => {
-    //when there are any changes to documents that match the query.
-    // This could be if a message gets deleted, modified, or added. 
-    guestbook.innerHTML = '';
-    snapshop.forEach((doc) => {
-      const entry = document.createElement('p');
-      entry.textContent = doc.data().name + ': ' + doc.data().text;
-      guestbook.appendChild(entry);
-    });
-  });
-
-
 }
 main();
+
+function subscribeGuestbook() {
+  const q = query(collection(db, 'guestbook'), orderBy('timestamp', 'desc'));
+  guestbookListener = onSnapshot(q, (snapshop) => {
+    //when there are any changes to documents that match the query.
+    // This could be if a message gets deleted, modified, or added. 
+    guestbookDiscussion.innerHTML = '';
+    //<p><strong> ${doc.data().name} </strong>: ${doc.data().text}</p>
+    snapshop.forEach((doc) => {
+     /*  const entry = document.createElement('p');
+      entry.textContent = doc.data().name + ': ' + doc.data().text;
+      guestbookDiscussion.appendChild(entry); */
+      const entry = document.createElement('div');
+      entry.classList.add('guestbook-entry');
+      entry.innerHTML += `<p><strong>${doc.data().name}</strong>: ${doc.data().text}</p>`;
+      guestbookDiscussion.appendChild(entry);
+    });
+  });
+}
+
+function unsubscribeGuestbook() {
+  if (guestbookListener != null) {
+    guestbookListener();
+    guestbookListener = null;
+  }
+}
